@@ -24,8 +24,6 @@ from .config import config
 logger = logging.getLogger("playmakr.highlights")
 
 TWITTER_SEARCH_URL = "https://api.twitter.com/2/tweets/search/recent"
-# Accounts that reliably post NBA highlight clips.
-HIGHLIGHT_ACCOUNTS = ["NBA", "Ballislife", "BleacherReport", "HoopMixOnly", "legion_hoops"]
 
 
 def _twitter_video_clips(query: str, max_results: int = 5) -> List[dict]:
@@ -33,8 +31,9 @@ def _twitter_video_clips(query: str, max_results: int = 5) -> List[dict]:
     if not config.TWITTER_BEARER_TOKEN:
         return []
 
-    from_clause = " OR ".join(f"from:{a}" for a in HIGHLIGHT_ACCOUNTS)
-    q = f"({query}) ({from_clause}) has:videos -is:retweet"
+    from_clause = " OR ".join(f"from:{a}" for a in config.HIGHLIGHT_ACCOUNTS)
+    scope = f" ({from_clause})" if from_clause else ""
+    q = f"({query}){scope} has:videos -is:retweet"
     params = {
         "query": q,
         "max_results": str(max(10, max_results)),

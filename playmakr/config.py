@@ -20,6 +20,11 @@ class Config:
 
     # Highlights (X/Twitter scraping)
     TWITTER_BEARER_TOKEN: str = os.getenv("TWITTER_BEARER_TOKEN", "")
+    # Comma-separated X/Twitter handles to source clips from. Empty = no
+    # account filter (search all of X). Configure per-deployment, not in code.
+    HIGHLIGHT_ACCOUNTS: list[str] = [
+        h.strip() for h in os.getenv("HIGHLIGHT_ACCOUNTS", "").split(",") if h.strip()
+    ]
 
     @classmethod
     def require(cls, *names: str) -> None:
